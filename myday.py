@@ -1,0 +1,1 @@
+fifteensApril = 'really sucks as yesterday and pre-yesterday, I am tired of kali linux wireless 802.11n'
