@@ -1,0 +1,238 @@
+
+CREATE TABLE Students (
+    stud_id INT PRIMARY KEY,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    birth DATE CHECK (birth > '1980-01-01'),
+    group_id INT,
+    major VARCHAR(50) NOT NULL,
+    progress_id INT,
+    CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Groups(group_id),
+    CONSTRAINT fk_progress_id FOREIGN KEY (progress_id) REFERENCES Progress(progress_id)
+);
+ 
+CREATE TABLE Groups (
+    group_id INT PRIMARY KEY,
+    group_name VARCHAR(12),
+    schedule_id INT,
+    department_id VARCHAR(4),
+    CONSTRAINT fk_schedule_id FOREIGN KEY (schedule_id) REFERENCES Schedule(schedule_id),
+    CONSTRAINT fk_department_id FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+CREATE TABLE Teachers (
+    teacher_id INT PRIMARY KEY,
+    firstN VARCHAR(50) NOT NULL,
+    lastN VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    subject_id INT,
+    access BOOLEAN,
+    number VARCHAR(11) NOT NULL,
+    department_id VARCHAR(4),
+    CONSTRAINT fk_subject_id_t FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id),
+    CONSTRAINT fk_department_id_t FOREIGN KEY (department_id) REFERENCES Departments(department_id)
+);
+
+CREATE TABLE Subjects (
+    subject_id INT PRIMARY KEY,
+    name VARCHAR(75),
+    duration DATE,
+    teacher_id INT,
+    credits INT,
+    group_id INT,
+    assignment_id INT,
+    CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Groups(group_id),
+    CONSTRAINT fk_teacher_id FOREIGN KEY (teacher_id) REFERENCES Teachers(teacher_id),
+    CONSTRAINT fk_assignment_id FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id)
+);
+
+CREATE TABLE Assignments (
+    assignment_id INT PRIMARY KEY,
+    content VARCHAR(100),
+    deadline DATE,
+    mark INT
+);
+
+CREATE TABLE Exams (
+    exam_id INT PRIMARY KEY,
+    date DATE,
+    mark INT
+);
+
+CREATE TABLE Departments (
+    department_id VARCHAR(4) PRIMARY KEY,
+    depName VARCHAR(100),
+    dean VARCHAR(100),
+    office VARCHAR(100)
+);
+
+CREATE TABLE Classroom (
+    classroom_id INT PRIMARY KEY
+);
+
+CREATE TABLE Schedule (
+    schedule_id INT PRIMARY KEY,
+    subject_id INT,
+    classroom_id INT,
+    grade_id INT,
+    group_id INT,
+    time DATETIME, 
+    day_of_week VARCHAR(10),
+    type_of_class VARCHAR(20),
+    teacher_lname VARCHAR(50),
+  	mark INT,
+    exam_id INT,
+    CONSTRAINT fk_subject_id FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id),
+    CONSTRAINT fk_exam_id FOREIGN KEY (exam_id) REFERENCES Exams(exam_id),
+    CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Groups(group_id),
+    CONSTRAINT fk_classroom_id FOREIGN KEY (classroom_id) REFERENCES Classroom(classroom_id)
+);
+
+CREATE TABLE Progress (
+    progress_id INT PRIMARY KEY,
+    stud_id INT,
+    subject_id INT,
+    RK1 INT,
+    RK2 INT,
+    Exam INT,
+    Final INT,
+    CONSTRAINT fk_stud_id FOREIGN KEY (stud_id) REFERENCES Students(stud_id),
+    CONSTRAINT fk_subject_id FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+CREATE TABLE Ed_process (
+    ed_process INT PRIMARY KEY,
+    Final INT,
+    subject_id INT,
+    group_id INT,
+    CONSTRAINT fk_group_id FOREIGN KEY (group_id) REFERENCES Groups(group_id),
+    CONSTRAINT fk_subject_id FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+-- Insert data into tables
+INSERT INTO Students (stud_id, firstName, lastName, birth, group_id, major) VALUES
+(30739, 'ERKANAT', 'ORYNBAI', '2004-05-25', 2123, 'CSSE'),
+(30747, 'Dilnaz', 'Smith', '2004-08-14', 2123, 'International Relations'),
+(30738, 'Ulan', 'Serik', '2004-06-10', 2123, 'Pedogology'),
+(30867, 'Aruna', 'Turysbekova', '2004-07-31', 2123, 'International Relations'),
+(30868, 'Gulnaz', 'Maksat', '2004-08-14', 2123, 'International Relations'),
+(30800, 'Qwerty', 'Asdfg', '2004-06-10', 2124, 'CSSE');
+
+INSERT INTO Groups (group_id, group_name, schedule_id, department_id) VALUES
+(2123, 'Group A', 1, '101'),
+(2124, 'Group B', 2, '102'),
+(2125, 'Group C', 3, '103');
+
+INSERT INTO Teachers (teacher_id, firstN, lastN, email, access, number, department_id) VALUES
+(1, 'Zhibek', 'Zhetekbay', 'zh.zhetekbay@iitu.edu.kz', true, 'teams', 'CSSE'),
+(2, 'Olzhas', 'Tergeuov', 'o.tergeuov@iitu.edu.kz', true, 'teams', 'IS'),
+(3, 'Galymzada', 'Alin', 'a.galymzada@iitu.edu.kz', true, 'teams', 'CSSE');
+
+INSERT INTO Subjects (subject_id, name, duration, teacher_id, credits) VALUES
+(1, 'Organization of database management SQL', '2024-05-01', 1, 5),
+(2, 'Project Management', '2024-05-01', 2, 6),
+(3, 'DevNet', '2024-05-01', 3, 7);
+
+INSERT INTO Assignments (assignment_id, content, deadline, mark) VALUES
+(1, 'Lab5', '2024-02-24', 100),
+(2, 'lab4', '2024-02-24', 100),
+(3, 'lab4', '2024-02-28', 100);
+
+INSERT INTO Exams (exam_id, date, mark) VALUES
+(1, '2024-05-27', 90),
+(2, '2024-05-27', 90),
+(3, '2024-05-27', 90);
+
+INSERT INTO Departments (department_id, depName, dean, office) VALUES
+('101', 'Faculty of Computer Technology and Cybersecurity', 'Someone', '308');
+
+INSERT INTO Classroom (classroom_id) VALUES
+(101),
+(102),
+(103);
+
+INSERT INTO Schedule (schedule_id, group_id, subject_id, classroom_id, time, day_of_week, type_of_class, teacher_lname, mark)
+VALUES 
+(1, 2123, 1, 207, '14:00:00', 'Saturday', 'Lab', 'Zhetekbay', 90),
+(2, 2124, 2, 207, '12:00:00', 'Saturday', 'Lab', 'Tergeuov', 80),
+(3, 2123, 3, 901, '09:00:00', 'Friday', 'Lecture', 'Alin', 90);
+
+
+INSERT INTO Progress (stud_id, subject_id, RK1, RK2, Exam, Final) VALUES
+(30739, 1, 85, 90, 85, 90),
+(30747, 2, 80, 85, 75, 80),
+(30738, 3, 90, 85, 80, 90),
+(30867, 1, 85, 85, 90, 85),
+(30868, 2, 80, 90, 90, 90),
+(30800, 3, 90, 90, 90, 90);
+
+INSERT INTO Ed_process (group_id, subject_id, final) VALUES
+(2123, 1, 85),
+(2123, 2, 80),
+(2123, 3, 90),
+(2124, 1, 85),
+(2124, 2, 80),
+(2124, 3, 90);
+
+SELECT lastName
+FROM Students
+WHERE major = 'CSSE';
+
+
+SELECT stud_id
+FROM Progress
+WHERE Final > (
+    SELECT AVG(Final)
+    FROM Progress
+);
+
+SELECT lastN
+FROM Teachers
+WHERE department_id IN ('CSSE', 'IS');
+
+
+SELECT lastName
+FROM Students
+WHERE EXISTS (
+    SELECT *
+    FROM Progress
+    WHERE Students.stud_id = Progress.stud_id
+    
+);
+
+
+SELECT lastName
+FROM Students
+WHERE LENGTH(lastName) > (
+    SELECT MAX(LENGTH(lastN))
+    FROM Teachers
+);
+
+--VIEW:
+CREATE VIEW Teacher_info AS
+SELECT teacher_id, firstN, lastN
+FROM Teachers;
+
+SELECT * FROM Teacher_info;
+
+INSERT INTO Teachers (teacher_id, firstN, lastN, email, subject_id, access, number, department_id)
+VALUES (4, 'John', 'Doe', 'john.doe@example.com', 4, true, '123456', 'CSSE');
+
+SELECT * FROM Teacher_info;
+
+ALTER VIEW Teacher_info AS
+SELECT teacher_id, firstN, lastN, email
+FROM Teachers;
+
+
+SELECT * FROM Teacher_info;
+
+
+CREATE VIEW Student_total_credits AS
+SELECT stud_id, firstName, lastName, SUM(credits) AS total_credits
+FROM Students
+JOIN Progress ON Students.stud_id = Progress.stud_id
+JOIN Subjects ON Progress.subject_id = Subjects.subject_id
+GROUP BY Students.stud_id;
+
+SELECT * FROM Student_total_credits;
