@@ -1,0 +1,1 @@
+print('red day is the great day')
